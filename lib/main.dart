@@ -179,3 +179,57 @@ class HomeScreenContent extends StatelessWidget {
     );
   }
 }
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'providers/auth_provider.dart';
+import 'providers/test_provider.dart';
+
+void main() {
+  runApp(const PaperWalaApp());
+}
+
+class PaperWalaApp extends StatelessWidget {
+  const PaperWalaApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider(create: (_) => TestProvider()),
+      ],
+      child: MaterialApp(
+        title: 'Paper Wala',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          primarySwatch: Colors.indigo,
+          scaffoldBackgroundColor: const Color(0xFFF8F9FA),
+          useMaterial3: true,
+        ),
+        home: const AppMainGate(),
+      ),
+    );
+  }
+}
+
+// यह विजेट चेक करेगा कि यूजर लॉगिन है या नहीं
+class AppMainGate extends StatelessWidget {
+  const AppMainGate({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context);
+
+    if (authProvider.currentUser != null) {
+      // यदि यूजर लॉगिन है तो होम स्क्रीन दिखाएं
+      return const Scaffold(
+        body: Center(child: Text("Welcome to Home Screen!")),
+      );
+    } else {
+      // यदि यूजर लॉगिन नहीं है तो लॉगिन स्क्रीन दिखाएं
+      return const Scaffold(
+        body: Center(child: Text("Please Login First")),
+      );
+    }
+  }
+}
