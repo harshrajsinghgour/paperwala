@@ -56,3 +56,5 @@ app.use('/api/tests', require('./routes/testRoutes'));
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+// Add this with existing routes
+app.use('/api/extra', require('./routes/extraRoutes'));
