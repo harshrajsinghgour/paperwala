@@ -233,3 +233,72 @@ class AppMainGate extends StatelessWidget {
     }
   }
 }
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'providers/auth_provider.dart';
+import 'providers/test_provider.dart';
+import 'providers/app_data_provider.dart';
+import 'screens/home_screen.dart';
+
+void main() {
+  runApp(const PaperWalaApp());
+}
+
+class PaperWalaApp extends StatelessWidget {
+  const PaperWalaApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider(create: (_) => TestProvider()),
+        ChangeNotifierProvider(create: (_) => AppDataProvider()),
+      ],
+      child: MaterialApp(
+        title: 'Paper Wala',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          primarySwatch: Colors.indigo,
+          scaffoldBackgroundColor: const Color(0xFFF8F9FA),
+          useMaterial3: true,
+        ),
+        home: const AppMainGate(),
+      ),
+    );
+  }
+}
+
+class AppMainGate extends StatelessWidget {
+  const AppMainGate({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context);
+
+    if (authProvider.currentUser != null) {
+      return const HomeScreen();
+    } else {
+      return const LoginScreenDummy();
+    }
+  }
+}
+
+class LoginScreenDummy extends StatelessWidget {
+  const LoginScreenDummy({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () {
+            // ऑटो लॉगिन टेस्ट करने के लिए
+            Provider.of<AuthProvider>(context, listen: false).login('harshraj@example.com', '123456');
+          },
+          child: const Text('लॉगिन करें (Demo Test)'),
+        ),
+      ),
+    );
+  }
+}
