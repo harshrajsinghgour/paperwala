@@ -1,3 +1,11 @@
+onTap: () {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => const TestSeriesDetailScreen(testTitle: "SSC CGL 2026 Target Series"),
+    ),
+  );
+}
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 import '../models/app_models.dart';
