@@ -43,7 +43,16 @@ export default function MobileLoginScreen() {
 
         {/* Middle Form Section */}
         <View style={styles.formContainer}>
+          
+          {/* Added Brand Logo/Icon Section */}
+          <View style={styles.logoContainer}>
+             <View style={styles.iconCircle}>
+               <FontAwesome5 name="newspaper" size={34} color="#0B0F19" />
+             </View>
+          </View>
+
           <Text style={styles.welcomeText}>Welcome to PaperWala 👑</Text>
+          <Text style={styles.brandSubText}>Your Local Newspaper Delivery Partner</Text>
           <Text style={styles.subText}>Enter your mobile number to continue</Text>
 
           {/* Input Box */}
@@ -63,7 +72,7 @@ export default function MobileLoginScreen() {
           </View>
         </View>
 
-        {/* Bottom Action Button */}
+        {/* Bottom Action Button & T&C */}
         <View style={styles.bottomContainer}>
           <TouchableOpacity 
             activeOpacity={0.8} 
@@ -79,6 +88,11 @@ export default function MobileLoginScreen() {
               <Text style={styles.buttonText}>Send Verification OTP</Text>
             </LinearGradient>
           </TouchableOpacity>
+
+          {/* Added Terms & Conditions text */}
+          <Text style={styles.termsText}>
+            By continuing, you agree to our <Text style={styles.linkText}>Terms</Text> & <Text style={styles.linkText}>Privacy Policy</Text>
+          </Text>
         </View>
 
       </KeyboardAvoidingView>
@@ -120,16 +134,38 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 25,
   },
+  logoContainer: {
+    marginBottom: 20,
+  },
+  iconCircle: {
+    width: 65,
+    height: 65,
+    borderRadius: 20,
+    backgroundColor: '#DCA73E',
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#DCA73E',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+    elevation: 4,
+  },
   welcomeText: {
     fontSize: 28,
     fontWeight: 'bold',
     color: '#DCA73E', // Royal Gold
-    marginBottom: 8,
+    marginBottom: 4,
+  },
+  brandSubText: {
+    fontSize: 16,
+    color: '#E2E8F0',
+    fontWeight: '500',
+    marginBottom: 25,
   },
   subText: {
-    fontSize: 16,
+    fontSize: 14,
     color: '#94A3B8',
-    marginBottom: 40,
+    marginBottom: 15,
   },
   inputContainer: {
     flexDirection: 'row',
@@ -169,6 +205,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 8,
     elevation: 5,
+    marginBottom: 20,
   },
   button: {
     width: '100%',
@@ -182,6 +219,15 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     letterSpacing: 0.5,
+  },
+  termsText: {
+    textAlign: 'center',
+    color: '#64748B',
+    fontSize: 12,
+  },
+  linkText: {
+    color: '#DCA73E',
+    fontWeight: 'bold',
   },
 });
     
