@@ -7,6 +7,7 @@ const UserSchema = new mongoose.Schema({
   phone: { type: String, required: true },
   targetExam: { type: String, default: 'SSC CGL' },
   isProUser: { type: Boolean, default: false },
+  isAdmin: { type: Boolean, default: false }, // Admin Authorization Flag
   totalScore: { type: Number, default: 0 },
   createdAt: { type: Date, default: Date.now }
 });
