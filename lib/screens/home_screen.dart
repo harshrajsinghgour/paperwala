@@ -216,3 +216,16 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
+ListTile(
+  leading: const Icon(Icons.emoji_events, color: Colors.amber, size: 30),
+  title: const Text("Live Leaderboard", style: TextStyle(fontWeight: FontWeight.bold)),
+  subtitle: const Text("Check Daily, Weekly & Monthly Ranks"),
+  trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+  onTap: () {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const LeaderboardScreen()),
+    );
+  },
+)
+  
