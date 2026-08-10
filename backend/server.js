@@ -1,24 +1,31 @@
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
-const pool = require('./config/db'); // ✅ connectDB ki jagah pool
+const path = require('path');
+const pool = require('./config/db'); // ✅ Postgres pool
+const connectDB = require('./config/dbMongo'); // ✅ MongoDB - iska naam alag rakh lena
 
 // Env
 dotenv.config();
-// connectDB(); <-- YE LINE HATA DI
+
+// DB Connect
+connectDB(); // MongoDB connect
 
 const app = express();
-const PORT = process.env.PORT || 5000; // ✅ 443 ki jagah 5000 kar diya
+const PORT = process.env.PORT || 5000;
 
 // Middlewares
 app.use(cors());
-app.use(express.json()); // JSON डेटा पढ़ने के लिए
+app.use(express.json()); // JSON data padhne ke liye
 
-// 🚀 API Endpoint: OTP भेजने के लिए - Teri wali detail
+// Serve Static Admin Web Panel
+app.use('/admin', express.static(path.join(__dirname, 'public/admin')));
+
+// 🚀 API Endpoint: OTP bhejne ke liye - Teri wali detail
 app.post('/api/auth/send-otp', (req, res) => {
     const { mobileNumber } = req.body;
 
-    // चेक करें कि नंबर 10 डिजिट का है या नहीं
+    // Check 10 digit
     if (!mobileNumber || mobileNumber.length !== 10) {
         return res.status(400).json({ 
             success: false, 
@@ -26,31 +33,30 @@ app.post('/api/auth/send-otp', (req, res) => {
         });
     }
 
-    // (यहाँ हम भविष्य में Twilio या MSG91 का कोड डालेंगे असली SMS भेजने के लिए)
-    // अभी के लिए हम एक डमी OTP जनरेट कर रहे हैं
+    // Dummy OTP generate
     const mockOtp = Math.floor(1000 + Math.random() * 9000); // 4-digit OTP
 
     console.log(`[BACKEND LOG] OTP ${mockOtp} generated for +91 ${mobileNumber}`);
 
-    // Frontend को रिस्पॉन्स भेजना
+    // Production me isko DB me save karna hai, frontend ko nahi bhejna
     res.status(200).json({
         success: true,
         message: "OTP sent successfully!",
-        // mockOtp: mockOtp (Production में इसे frontend को वापस नहीं भेजते, डेटाबेस में सेव करते हैं)
     });
 });
 
-// All Integrated API Routes - Teri baaki routes
+// All Integrated API Routes
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/tests', require('./routes/testRoutes'));
 app.use('/api/extra', require('./routes/extraRoutes'));
+app.use('/api/admin', require('./routes/adminRoutes'));
 
 // Root Health Check Route
 app.get('/', (req, res) => {
-  res.send('Paper Wala Backend API Running on PORT 5000...'); // ✅ yaha bhi 5000
+  res.send('🚀👑 Paper Wala Backend API Running on PORT 5000...');
 });
 
-// सर्वर स्टार्ट करना
+// Server Start
 app.listen(PORT, '0.0.0.0', () => {
-    console.log(`🚀👑 Paper Wala Backend active on http://localhost:${PORT}`); // ✅ https ki jagah http
+    console.log(`🚀 Paper Wala Backend active on http://localhost:${PORT}`);
 });
