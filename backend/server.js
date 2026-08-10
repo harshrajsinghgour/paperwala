@@ -1,14 +1,14 @@
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
-const connectDB = require('./config/db');
+const pool = require('./config/db'); // ✅ connectDB ki jagah pool
 
-// Env + DB Connect
+// Env
 dotenv.config();
-connectDB();
+// connectDB(); <-- YE LINE HATA DI
 
 const app = express();
-const PORT = process.env.PORT || 443; // ✅ 443 kar diya
+const PORT = process.env.PORT || 443; // ✅ 443
 
 // Middlewares
 app.use(cors());
