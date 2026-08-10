@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Paper Wala - Ultimate Admin Portal</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-100 font-sans">
+
+  <!-- LOGIN MODAL -->
+  <div id="loginSection" class="fixed inset-0 bg-gray-900 bg-opacity-95 flex items-center justify-center z-50">
+    <div class="bg-white p-8 rounded-xl shadow-2xl w-96 border">
+      <div class="text-center mb-6">
+        <h1 class="text-3xl font-black text-indigo-600">Paper Wala</h1>
+        <p class="text-gray-500 text-sm font-semibold">Master Admin Control</p>
+      </div>
+      <div class="space-y-4">
+        <input type="email" id="adminEmail" class="w-full p-3 border rounded-lg outline-none" placeholder="Admin Email">
+        <input type="password" id="adminPassword" class="w-full p-3 border rounded-lg outline-none" placeholder="Password">
+        <button onclick="adminLogin()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-lg">Login to Master Portal</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN DASHBOARD -->
+  <div id="dashboardLayout" class="hidden flex h-screen overflow-hidden">
+    
+    <!-- SIDEBAR -->
+    <aside class="w-64 bg-indigo-950 text-white flex flex-col justify-between p-4">
+      <div>
+        <div class="text-2xl font-black text-indigo-400 mb-8 pb-4 border-b border-indigo-800">Paper Wala Control</div>
+        <nav class="space-y-2">
+          <button onclick="switchTab('tabStats')" class="w-full text-left p-3 rounded-lg hover:bg-indigo-800 font-semibold"><i class="fa-solid fa-chart-line mr-2"></i> Overview</button>
+          <button onclick="switchTab('tabAdsAndFeatures')" class="w-full text-left p-3 rounded-lg hover:bg-indigo-800 font-semibold text-yellow-300"><i class="fa-solid fa-rectangle-ad mr-2"></i> Ad & Feature Control</button>
+          <button onclick="switchTab('tabUsers')" class="w-full text-left p-3 rounded-lg hover:bg-indigo-800 font-semibold"><i class="fa-solid fa-users mr-2"></i> User Management</button>
+        </nav>
+      </div>
+      <button onclick="logout()" class="w-full bg-red-600 p-3 rounded-lg font-bold">Logout</button>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 overflow-y-auto p-8 bg-gray-50">
+
+      <!-- TAB: AD & FEATURE CONTROL -->
+      <section id="tabAdsAndFeatures" class="tab-content">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6">App Feature Control & Google AdMob Settings</h2>
+
+        <div class="grid grid-cols-2 gap-8">
+          
+          <!-- FEATURE TOGGLES -->
+          <div class="bg-white p-6 rounded-xl shadow space-y-4 border">
+            <h3 class="font-bold text-lg text-indigo-600 border-b pb-2"><i class="fa-solid fa-toggle-on"></i> App Features On/Off Switch</h3>
+            
+            <div class="flex justify-between items-center p-3 bg-gray-50 rounded">
+              <span class="font-bold text-gray-700">Mock Test Series Module</span>
+              <input type="checkbox" id="ctrlTestSeries" class="w-6 h-6 accent-indigo-600">
+            </div>
+
+            <div class="flex justify-between items-center p-3 bg-gray-50 rounded">
+              <span class="font-bold text-gray-700">Study Notes & PDFs Module</span>
+              <input type="checkbox" id="ctrlNotes" class="w-6 h-6 accent-indigo-600">
+            </div>
+
+            <div class="flex justify-between items-center p-3 bg-gray-50 rounded">
+              <span class="font-bold text-gray-700">Daily Current Affairs Module</span>
+              <input type="checkbox" id="ctrlCurrentAffairs" class="w-6 h-6 accent-indigo-600">
+            </div>
+
+            <div class="flex justify-between items-center p-3 bg-gray-50 rounded">
+              <span class="font-bold text-gray-700">Ask Doubts / Chat Support</span>
+              <input type="checkbox" id="ctrlDoubts" class="w-6 h-6 accent-indigo-600">
+            </div>
+
+            <hr class="my-4">
+            <h3 class="font-bold text-lg text-red-600"><i class="fa-solid fa-triangle-exclamation"></i> Maintenance Mode</h3>
+            <div class="flex justify-between items-center p-3 bg-red-50 rounded">
+              <span class="font-bold text-red-800">Enable Maintenance Screen</span>
+              <input type="checkbox" id="ctrlMaintenance" class="w-6 h-6 accent-red-600">
+            </div>
+            <input type="text" id="ctrlMaintMsg" class="w-full p-2 border rounded text-sm" placeholder="Maintenance Message for users">
+          </div>
+
+          <!-- AD CONTROL PANEL -->
+          <div class="bg-white p-6 rounded-xl shadow space-y-4 border">
+            <h3 class="font-bold text-lg text-green-600 border-b pb-2"><i class="fa-solid fa-rectangle-ad"></i> AdMob Ads Manager</h3>
+
+            <div class="flex justify-between items-center p-3 bg-green-50 rounded">
+              <span class="font-bold text-gray-800">Global Ads Enabled</span>
+              <input type="checkbox" id="ctrlAdsEnabled" class="w-6 h-6 accent-green-600">
+            </div>
+
+            <div class="flex justify-between items-center p-3 bg-green-50 rounded">
+              <span class="font-bold text-gray-800">Disable Ads for PRO Users</span>
+              <input type="checkbox" id="ctrlDisableAdsPro" class="w-6 h-6 accent-green-600">
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-gray-600 uppercase">Interstitial Ad Frequency (Show Ad every N clicks)</label>
+              <input type="number" id="ctrlAdFreq" class="w-full mt-1 p-2 border rounded">
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-gray-600 uppercase">AdMob Banner Unit ID</label>
+              <input type="text" id="ctrlBannerId" class="w-full mt-1 p-2 border rounded text-sm font-mono">
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-gray-600 uppercase">AdMob Interstitial Unit ID</label>
+              <input type="text" id="ctrlInterId" class="w-full mt-1 p-2 border rounded text-sm font-mono">
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-gray-600 uppercase">AdMob Rewarded Unit ID</label>
+              <input type="text" id="ctrlRewardId" class="w-full mt-1 p-2 border rounded text-sm font-mono">
+            </div>
+          </div>
+
+        </div>
+
+        <button onclick="saveControlSettings()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-black py-4 rounded-xl shadow-lg mt-8 text-lg">💾 Save All App & Ads Controls</button>
+      </section>
+
+    </main>
+  </div>
+
+  <script>
+    let adminToken = localStorage.getItem('adminToken') || '';
+    const API_BASE = '/api';
+
+    if (adminToken) showDashboard();
+
+    async function adminLogin() {
+      const email = document.getElementById('adminEmail').value;
+      const password = document.getElementById('adminPassword').value;
+
+      const res = await fetch(`${API_BASE}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+
+      const data = await res.json();
+      if (data.token && data.user.isAdmin) {
+        adminToken = data.token;
+        localStorage.setItem('adminToken', adminToken);
+        showDashboard();
+      } else {
+        alert("Access Denied!");
+      }
+    }
+
+    function showDashboard() {
+      document.getElementById('loginSection').classList.add('hidden');
+      document.getElementById('dashboardLayout').classList.remove('hidden');
+      loadControlSettings();
+    }
+
+    function logout() {
+      localStorage.removeItem('adminToken');
+      location.reload();
+    }
+
+    async function loadControlSettings() {
+      const res = await fetch(`${API_BASE}/admin/app-config`, {
+        headers: { 'Authorization': `Bearer ${adminToken}` }
+      });
+      const c = await res.json();
+
+      document.getElementById('ctrlTestSeries').checked = c.isTestSeriesEnabled;
+      document.getElementById('ctrlNotes').checked = c.isNotesEnabled;
+      document.getElementById('ctrlCurrentAffairs').checked = c.isCurrentAffairsEnabled;
+      document.getElementById('ctrlDoubts').checked = c.isDoubtSectionEnabled;
+
+      document.getElementById('ctrlMaintenance').checked = c.isMaintenanceMode;
+      document.getElementById('ctrlMaintMsg').value = c.maintenanceMessage || '';
+
+      document.getElementById('ctrlAdsEnabled').checked = c.isAdsEnabled;
+      document.getElementById('ctrlDisableAdsPro').checked = c.disableAdsForPro;
+      document.getElementById('ctrlAdFreq').value = c.interstitialAdFrequency || 3;
+      document.getElementById('ctrlBannerId').value = c.admobBannerId || '';
+      document.getElementById('ctrlInterId').value = c.admobInterstitialId || '';
+      document.getElementById('ctrlRewardId').value = c.admobRewardedId || '';
+    }
+
+    async function saveControlSettings() {
+      const body = {
+        isTestSeriesEnabled: document.getElementById('ctrlTestSeries').checked,
+        isNotesEnabled: document.getElementById('ctrlNotes').checked,
+        isCurrentAffairsEnabled: document.getElementById('ctrlCurrentAffairs').checked,
+        isDoubtSectionEnabled: document.getElementById('ctrlDoubts').checked,
+
+        isMaintenanceMode: document.getElementById('ctrlMaintenance').checked,
+        maintenanceMessage: document.getElementById('ctrlMaintMsg').value,
+
+        isAdsEnabled: document.getElementById('ctrlAdsEnabled').checked,
+        disableAdsForPro: document.getElementById('ctrlDisableAdsPro').checked,
+        interstitialAdFrequency: parseInt(document.getElementById('ctrlAdFreq').value),
+        admobBannerId: document.getElementById('ctrlBannerId').value,
+        admobInterstitialId: document.getElementById('ctrlInterId').value,
+        admobRewardedId: document.getElementById('ctrlRewardId').value
+      };
+
+      const res = await fetch(`${API_BASE}/admin/app-config`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${adminToken}`
+        },
+        body: JSON.stringify(body)
+      });
+
+      if (res.ok) alert("🎉 App Control & Ads Settings Successfully Saved!");
+    }
+  </script>
+</body>
+                </html>
+                
