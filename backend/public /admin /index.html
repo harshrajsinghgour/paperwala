@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Paper Wala - Web Admin Portal</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-100 font-sans">
+
+  <!-- LOGIN MODAL -->
+  <div id="loginSection" class="fixed inset-0 bg-gray-900 bg-opacity-95 flex items-center justify-center z-50">
+    <div class="bg-white p-8 rounded-xl shadow-2xl w-96 border border-gray-200">
+      <div class="text-center mb-6">
+        <h1 class="text-3xl font-black text-indigo-600">Paper Wala</h1>
+        <p class="text-gray-500 text-sm font-semibold">Admin Control Portal</p>
+      </div>
+      <div class="space-y-4">
+        <div>
+          <label class="text-xs font-bold text-gray-600 uppercase">Admin Email</label>
+          <input type="email" id="adminEmail" class="w-full mt-1 p-3 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="admin@paperwala.com">
+        </div>
+        <div>
+          <label class="text-xs font-bold text-gray-600 uppercase">Password</label>
+          <input type="password" id="adminPassword" class="w-full mt-1 p-3 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="••••••••">
+        </div>
+        <button onclick="adminLogin()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-lg shadow-lg transition">Dashboard में लॉगिन करें</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- DASHBOARD MAIN LAYOUT -->
+  <div id="dashboardLayout" class="hidden flex h-screen overflow-hidden">
+    
+    <!-- SIDEBAR -->
+    <aside class="w-64 bg-indigo-900 text-white flex flex-col justify-between p-4">
+      <div>
+        <div class="text-2xl font-black text-indigo-300 mb-8 border-b border-indigo-700 pb-4">Paper Wala Admin</div>
+        <nav class="space-y-2">
+          <button onclick="switchTab('tabStats')" class="w-full text-left p-3 rounded-lg hover:bg-indigo-800 flex items-center gap-3 font-semibold"><i class="fa-solid fa-chart-line"></i> Dashboard Overview</button>
+          <button onclick="switchTab('tabTests')" class="w-full text-left p-3 rounded-lg hover:bg-indigo-800 flex items-center gap-3 font-semibold"><i class="fa-solid fa-file-signature"></i> Mock Tests Manage</button>
+          <button onclick="switchTab('tabNotes')" class="w-full text-left p-3 rounded-lg hover:bg-indigo-800 flex items-center gap-3 font-semibold"><i class="fa-solid fa-book-open"></i> Study Notes Manage</button>
+          <button onclick="switchTab('tabCA')" class="w-full text-left p-3 rounded-lg hover:bg-indigo-800 flex items-center gap-3 font-semibold"><i class="fa-solid fa-newspaper"></i> Current Affairs</button>
+          <button onclick="switchTab('tabDoubts')" class="w-full text-left p-3 rounded-lg hover:bg-indigo-800 flex items-center gap-3 font-semibold"><i class="fa-solid fa-comments"></i> Student Doubts</button>
+          <button onclick="switchTab('tabUsers')" class="w-full text-left p-3 rounded-lg hover:bg-indigo-800 flex items-center gap-3 font-semibold"><i class="fa-solid fa-users"></i> User Management</button>
+          <button onclick="switchTab('tabConfig')" class="w-full text-left p-3 rounded-lg hover:bg-indigo-800 flex items-center gap-3 font-semibold"><i class="fa-solid fa-sliders"></i> App Banner & Info</button>
+        </nav>
+      </div>
+      <button onclick="logout()" class="w-full bg-red-600 hover:bg-red-700 p-3 rounded-lg font-bold flex items-center justify-center gap-2"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 overflow-y-auto p-8 bg-gray-50">
+
+      <!-- TAB 1: OVERVIEW STATS -->
+      <section id="tabStats" class="tab-content">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6">Dashboard Overview</h2>
+        <div class="grid grid-cols-4 gap-6">
+          <div class="bg-white p-6 rounded-xl shadow border-l-4 border-indigo-500">
+            <p class="text-xs font-bold text-gray-500 uppercase">Total Users</p>
+            <p id="statUsers" class="text-3xl font-black text-gray-800 mt-2">0</p>
+          </div>
+          <div class="bg-white p-6 rounded-xl shadow border-l-4 border-green-500">
+            <p class="text-xs font-bold text-gray-500 uppercase">Total Mock Tests</p>
+            <p id="statTests" class="text-3xl font-black text-gray-800 mt-2">0</p>
+          </div>
+          <div class="bg-white p-6 rounded-xl shadow border-l-4 border-yellow-500">
+            <p class="text-xs font-bold text-gray-500 uppercase">Total PDF Notes</p>
+            <p id="statNotes" class="text-3xl font-black text-gray-800 mt-2">0</p>
+          </div>
+          <div class="bg-white p-6 rounded-xl shadow border-l-4 border-red-500">
+            <p class="text-xs font-bold text-gray-500 uppercase">Pending Doubts</p>
+            <p id="statDoubts" class="text-3xl font-black text-gray-800 mt-2">0</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 2: CREATE TEST & QUESTION BANK -->
+      <section id="tabTests" class="tab-content hidden">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6">Create New Mock Test</h2>
+        <div class="bg-white p-6 rounded-xl shadow space-y-4 max-w-2xl">
+          <div>
+            <label class="block text-sm font-bold text-gray-700">Test Title</label>
+            <input id="testTitle" type="text" class="w-full mt-1 p-2 border rounded" placeholder="e.g. SSC CGL Tier-1 Full Mock 02">
+          </div>
+          <div class="grid grid-cols-3 gap-4">
+            <div>
+              <label class="block text-sm font-bold text-gray-700">Category</label>
+              <input id="testCategory" type="text" class="w-full mt-1 p-2 border rounded" placeholder="SSC CGL">
+            </div>
+            <div>
+              <label class="block text-sm font-bold text-gray-700">Duration (Mins)</label>
+              <input id="testDuration" type="number" value="60" class="w-full mt-1 p-2 border rounded">
+            </div>
+            <div>
+              <label class="block text-sm font-bold text-gray-700">Total Marks</label>
+              <input id="testMarks" type="number" value="200" class="w-full mt-1 p-2 border rounded">
+            </div>
+          </div>
+
+          <hr class="my-4">
+          <h3 class="font-bold text-gray-800">Add Questions</h3>
+          <div id="questionsContainer" class="space-y-4">
+            <div class="q-block border p-4 rounded bg-gray-50">
+              <input type="text" class="q-text w-full p-2 border rounded mb-2" placeholder="सवाल लिखें...">
+              <div class="grid grid-cols-2 gap-2 mb-2">
+                <input type="text" class="opt-0 p-2 border rounded" placeholder="Option A">
+                <input type="text" class="opt-1 p-2 border rounded" placeholder="Option B">
+                <input type="text" class="opt-2 p-2 border rounded" placeholder="Option C">
+                <input type="text" class="opt-3 p-2 border rounded" placeholder="Option D">
+              </div>
+              <div class="grid grid-cols-2 gap-2">
+                <select class="correct-idx p-2 border rounded">
+                  <option value="0">Correct: Option A</option>
+                  <option value="1">Correct: Option B</option>
+                  <option value="2">Correct: Option C</option>
+                  <option value="3">Correct: Option D</option>
+                </select>
+                <input type="text" class="exp-text p-2 border rounded" placeholder="Explanation (व्याख्या)">
+              </div>
+            </div>
+          </div>
+          <button onclick="addQuestionField()" class="bg-gray-800 text-white px-4 py-2 rounded text-sm font-bold">+ अगला सवाल जोड़ें</button>
+
+          <button onclick="submitNewTest()" class="w-full bg-indigo-600 text-white font-bold py-3 rounded mt-4">Mock Test सबमिट करें</button>
+        </div>
+      </section>
+
+      <!-- TAB 3: STUDY NOTES -->
+      <section id="tabNotes" class="tab-content hidden">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6">Upload Study PDF Note</h2>
+        <div class="bg-white p-6 rounded-xl shadow space-y-4 max-w-xl">
+          <input id="noteTitle" type="text" placeholder="Title (e.g. Ancient History Handwritten Notes)" class="w-full p-2 border rounded">
+          <input id="noteSubject" type="text" placeholder="Subject (History)" class="w-full p-2 border rounded">
+          <input id="noteCategory" type="text" placeholder="Target Category (SSC CGL)" class="w-full p-2 border rounded">
+          <input id="notePdfUrl" type="text" placeholder="PDF File Direct URL (Google Drive / Cloudinary)" class="w-full p-2 border rounded">
+          <button onclick="submitNote()" class="w-full bg-green-600 text-white font-bold py-3 rounded">PDF Note अपलोड करें</button>
+        </div>
+      </section>
+
+      <!-- TAB 4: CURRENT AFFAIRS -->
+      <section id="tabCA" class="tab-content hidden">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6">Post Daily Current Affair</h2>
+        <div class="bg-white p-6 rounded-xl shadow space-y-4 max-w-xl">
+          <input id="caTitle" type="text" placeholder="Headline / Title" class="w-full p-2 border rounded">
+          <textarea id="caDesc" placeholder="Complete News Detail..." class="w-full p-2 border rounded h-32"></textarea>
+          <input id="caCategory" type="text" placeholder="Category (National / Defense / Sports)" class="w-full p-2 border rounded">
+          <button onclick="submitCA()" class="w-full bg-blue-600 text-white font-bold py-3 rounded">करंट अफेयर्स पोस्ट करें</button>
+        </div>
+      </section>
+
+      <!-- TAB 5: STUDENT DOUBTS -->
+      <section id="tabDoubts" class="tab-content hidden">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6">Pending Student Doubts</h2>
+        <div id="doubtsList" class="space-y-4"></div>
+      </section>
+
+      <!-- TAB 6: USERS MANAGEMENT -->
+      <section id="tabUsers" class="tab-content hidden">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6">Registered Users</h2>
+        <div class="bg-white rounded-xl shadow overflow-hidden">
+          <table class="w-full text-left">
+            <thead class="bg-gray-100 text-gray-600 uppercase text-xs">
+              <tr>
+                <th class="p-4">Name</th>
+                <th class="p-4">Email</th>
+                <th class="p-4">Exam</th>
+                <th class="p-4">Pro Status</th>
+                <th class="p-4">Action</th>
+              </tr>
+            </thead>
+            <tbody id="usersTableBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- TAB 7: APP CONFIG & BANNERS -->
+      <section id="tabConfig" class="tab-content hidden">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6">App Settings & Banners</h2>
+        <div class="bg-white p-6 rounded-xl shadow space-y-4 max-w-xl">
+          <div>
+            <label class="block text-sm font-bold text-gray-700">App Ticker / Notice Text</label>
+            <input id="configNotice" type="text" placeholder="🔥 SSC CGL Tier-1 Mock Test 02 Is Live Now!" class="w-full p-2 border rounded">
+          </div>
+          <div>
+            <label class="block text-sm font-bold text-gray-700">Home Banner Image URL</label>
+            <input id="configBanner" type="text" placeholder="https://example.com/banner.jpg" class="w-full p-2 border rounded">
+          </div>
+          <button onclick="submitConfig()" class="w-full bg-purple-600 text-white font-bold py-3 rounded">Settings अपडेट करें</button>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- JAVASCRIPT LOGIC -->
+  <script>
+    let adminToken = localStorage.getItem('adminToken') || '';
+    const API_BASE = '/api';
+
+    if (adminToken) {
+      showDashboard();
+    }
+
+    async function adminLogin() {
+      const email = document.getElementById('adminEmail').value;
+      const password = document.getElementById('adminPassword').value;
+
+      const res = await fetch(`${API_BASE}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+
+      const data = await res.json();
+      if (data.token && data.user.isAdmin) {
+        adminToken = data.token;
+        localStorage.setItem('adminToken', adminToken);
+        showDashboard();
+      } else {
+        alert("गलत क्रेडेंशियल्स या आपके पास एडमिन राइट्स नहीं हैं!");
+      }
+    }
+
+    function showDashboard() {
+      document.getElementById('loginSection').classList.add('hidden');
+      document.getElementById('dashboardLayout').classList.remove('hidden');
+      loadStats();
+    }
+
+    function logout() {
+      localStorage.removeItem('adminToken');
+      location.reload();
+    }
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.getElementById(tabId).classList.remove('hidden');
+
+      if (tabId === 'tabStats') loadStats();
+      if (tabId === 'tabUsers') loadUsers();
+      if (tabId === 'tabDoubts') loadDoubts();
+    }
+
+    async function loadStats() {
+      const res = await fetch(`${API_BASE}/admin/stats`, {
+        headers: { 'Authorization': `Bearer ${adminToken}` }
+      });
+      const data = await res.json();
+      document.getElementById('statUsers').innerText = data.totalUsers || 0;
+      document.getElementById('statTests').innerText = data.totalTests || 0;
+      document.getElementById('statNotes').innerText = data.totalNotes || 0;
+      document.getElementById('statDoubts').innerText = data.pendingDoubts || 0;
+    }
+
+    async function loadUsers() {
+      const res = await fetch(`${API_BASE}/admin/users`, {
+        headers: { 'Authorization': `Bearer ${adminToken}` }
+      });
+      const users = await res.json();
+      const tbody = document.getElementById('usersTableBody');
+      tbody.innerHTML = users.map(u => `
+        <tr class="border-b">
+          <td class="p-4 font-bold">${u.name}</td>
+          <td class="p-4 text-gray-600">${u.email}</td>
+          <td class="p-4">${u.targetExam}</td>
+          <td class="p-4"><span class="px-2 py-1 text-xs rounded font-bold ${u.isProUser ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}">${u.isProUser ? 'PRO' : 'FREE'}</span></td>
+          <td class="p-4 space-x-2">
+            <button onclick="togglePro('${u._id}')" class="bg-indigo-600 text-white px-3 py-1 rounded text-xs font-bold">Toggle Pro</button>
+            <button onclick="deleteUser('${u._id}')" class="bg-red-600 text-white px-3 py-1 rounded text-xs font-bold">Delete</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    async function togglePro(userId) {
+      await fetch(`${API_BASE}/admin/users/${userId}/toggle-pro`, {
+        method: 'PUT',
+        headers: { 'Authorization': `Bearer ${adminToken}` }
+      });
+      loadUsers();
+    }
+
+    async function deleteUser(userId) {
+      if (confirm("क्या आप इस यूज़र को डिलीट करना चाहते हैं?")) {
+        await fetch(`${API_BASE}/admin/users/${userId}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${adminToken}` }
+        });
+        loadUsers();
+      }
+    }
+
+    function addQuestionField() {
+      const container = document.getElementById('questionsContainer');
+      const div = document.createElement('div');
+      div.className = "q-block border p-4 rounded bg-gray-50";
+      div.innerHTML = `
+        <input type="text" class="q-text w-full p-2 border rounded mb-2" placeholder="सवाल लिखें...">
+        <div class="grid grid-cols-2 gap-2 mb-2">
+          <input type="text" class="opt-0 p-2 border rounded" placeholder="Option A">
+          <input type="text" class="opt-1 p-2 border rounded" placeholder="Option B">
+          <input type="text" class="opt-2 p-2 border rounded" placeholder="Option C">
+          <input type="text" class="opt-3 p-2 border rounded" placeholder="Option D">
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <select class="correct-idx p-2 border rounded">
+            <option value="0">Correct: Option A</option>
+            <option value="1">Correct: Option B</option>
+            <option value="2">Correct: Option C</option>
+            <option value="3">Correct: Option D</option>
+          </select>
+          <input type="text" class="exp-text p-2 border rounded" placeholder="Explanation (व्याख्या)">
+        </div>
+      `;
+      container.appendChild(div);
+    }
+
+    async function submitNewTest() {
+      const qBlocks = document.querySelectorAll('.q-block');
+      const questions = Array.from(qBlocks).map(q => ({
+        questionText: q.querySelector('.q-text').value,
+        options: [
+          q.querySelector('.opt-0').value,
+          q.querySelector('.opt-1').value,
+          q.querySelector('.opt-2').value,
+          q.querySelector('.opt-3').value
+        ],
+        correctOptionIndex: parseInt(q.querySelector('.correct-idx').value),
+        explanation: q.querySelector('.exp-text').value
+      }));
+
+      const body = {
+        title: document.getElementById('testTitle').value,
+        category: document.getElementById('testCategory').value,
+        durationMinutes: parseInt(document.getElementById('testDuration').value),
+        totalMarks: parseInt(document.getElementById('testMarks').value),
+        questions
+      };
+
+      const res = await fetch(`${API_BASE}/admin/tests`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${adminToken}`
+        },
+        body: JSON.stringify(body)
+      });
+
+      if (res.ok) {
+        alert("Mock Test सफलतापूर्वक पोस्ट हो गया!");
+        location.reload();
+      }
+    }
+
+    async function submitNote() {
+      const body = {
+        title: document.getElementById('noteTitle').value,
+        subject: document.getElementById('noteSubject').value,
+        category: document.getElementById('noteCategory').value,
+        pdfUrl: document.getElementById('notePdfUrl').value
+      };
+
+      const res = await fetch(`${API_BASE}/admin/notes`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${adminToken}`
+        },
+        body: JSON.stringify(body)
+      });
+
+      if (res.ok) alert("PDF Note अपलोड हो गया!");
+    }
+
+    async function submitCA() {
+      const body = {
+        title: document.getElementById('caTitle').value,
+        description: document.getElementById('caDesc').value,
+        category: document.getElementById('caCategory').value
+      };
+
+      const res = await fetch(`${API_BASE}/admin/current-affairs`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${adminToken}`
+        },
+        body: JSON.stringify(body)
+      });
+
+      if (res.ok) alert("करंट अफेयर्स पोस्ट हो गया!");
+    }
+
+    async function loadDoubts() {
+      const res = await fetch(`${API_BASE}/admin/doubts`, {
+        headers: { 'Authorization': `Bearer ${adminToken}` }
+      });
+      const doubts = await res.json();
+      const list = document.getElementById('doubtsList');
+      list.innerHTML = doubts.map(d => `
+        <div class="bg-white p-4 rounded-xl shadow space-y-2 border-l-4 ${d.status === 'Solved' ? 'border-green-500' : 'border-amber-500'}">
+          <div class="flex justify-between items-center">
+            <span class="font-bold text-indigo-600">${d.subject}</span>
+            <span class="text-xs font-bold px-2 py-1 rounded ${d.status === 'Solved' ? 'bg-green-100 text-green-800' : 'bg-amber-100 text-amber-800'}">${d.status}</span>
+          </div>
+          <p class="font-semibold text-gray-800">${d.questionText}</p>
+          ${d.status === 'Pending' ? `
+            <div class="flex gap-2 mt-2">
+              <input type="text" id="reply-${d.
