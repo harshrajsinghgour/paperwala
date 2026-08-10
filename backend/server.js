@@ -8,7 +8,7 @@ dotenv.config();
 // connectDB(); <-- YE LINE HATA DI
 
 const app = express();
-const PORT = process.env.PORT || 443; // ✅ 443
+const PORT = process.env.PORT || 5000; // ✅ 443 ki jagah 5000 kar diya
 
 // Middlewares
 app.use(cors());
@@ -47,10 +47,10 @@ app.use('/api/extra', require('./routes/extraRoutes'));
 
 // Root Health Check Route
 app.get('/', (req, res) => {
-  res.send('Paper Wala Backend API Running on PORT 443...');
+  res.send('Paper Wala Backend API Running on PORT 5000...'); // ✅ yaha bhi 5000
 });
 
 // सर्वर स्टार्ट करना
 app.listen(PORT, '0.0.0.0', () => {
-    console.log(`🚀👑 Paper Wala Backend active on https://localhost:${PORT}`);
+    console.log(`🚀👑 Paper Wala Backend active on http://localhost:${PORT}`); // ✅ https ki jagah http
 });
