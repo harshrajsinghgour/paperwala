@@ -8,6 +8,7 @@ const Note = require('../models/Note');
 const CurrentAffair = require('../models/CurrentAffair');
 const Doubt = require('../models/Doubt');
 const AppConfig = require('../models/AppConfig');
+const DailyChallenge = require('../models/DailyChallenge');
 
 // 1. DASHBOARD OVERVIEW STATS
 router.get('/stats', adminAuth, async (req, res) => {
@@ -46,7 +47,7 @@ router.put('/users/:id/toggle-pro', adminAuth, async (req, res) => {
   }
 });
 
-router.put('/users/:id/toggle-admin', adminAuth, async (req, res) => { // NAYA ADD KIYA
+router.put('/users/:id/toggle-admin', adminAuth, async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
     if (!user) return res.status(404).json({ success: false, message: 'User not found' });
@@ -108,4 +109,34 @@ router.delete('/notes/:id', adminAuth, async (req, res) => {
   }
 });
 
-//
+// 5. CURRENT AFFAIRS MANAGEMENT
+router.post('/current-affairs', adminAuth, async (req, res) => {
+  try {
+    const affair = new CurrentAffair(req.body);
+    await affair.save();
+    res.status(201).json({ success: true, data: affair });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+router.delete('/current-affairs/:id', adminAuth, async (req, res) => {
+  try {
+    await CurrentAffair.findByIdAndDelete(req.params.id);
+    res.json({ success: true, message: 'Current Affair deleted successfully' });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// 6. DOUBT RESOLUTION
+router.get('/doubts', adminAuth, async (req, res) => {
+  try {
+    const doubts = await Doubt.find().populate('studentId', 'name email').sort({ createdAt: -1 });
+    res.json({ success: true, data: doubts });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+router.post('/doubts/reply', adminAuth,
