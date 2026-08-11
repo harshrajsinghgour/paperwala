@@ -20,7 +20,7 @@ export default function ProfilePage() {
       <div className="max-w-4xl w-full mx-auto p-4 md:p-6 my-6 space-y-6">
 
         {/* Profile Header - Merged Design */}
-        <div className="bg-cardBg border-borderDark rounded-2xl p-6 flex-col md:flex-row items-center gap-6 shadow-xl">
+        <div className="bg-cardBg border border-borderDark rounded-2xl p-6 flex-col md:flex-row items-center gap-6 shadow-xl">
           <div className="w-20 h-20 md:w-24 md:h-24 rounded-full bg-accentGold/20 border-2 border-accentGold flex items-center justify-center text-accentGold text-2xl md:text-4xl font-bold shadow-lg">
             {user?.name?.[0] || 'U'}
           </div>
@@ -42,4 +42,21 @@ export default function ProfilePage() {
           <div className="p-3 md:p-4 bg-cardBg rounded-xl border border-borderDark text-center">
             <span className="text-lg md:text-2xl font-bold text-accentGold">12</span>
             <p className="text-[10px] md:text-xs text-textSecondary mt-0.5 md:mt-1">Mock Tests Attempted</p>
-          </div
+          </div>
+          
+          <div className="p-3 md:p-4 bg-cardBg rounded-xl border border-borderDark text-center">
+            <span className="text-lg md:text-2xl font-bold text-accentGold">{user?.coins || 120}</span>
+            <p className="text-[10px] md:text-xs text-textSecondary mt-0.5 md:mt-1">Coins</p>
+          </div>
+
+        </div>
+
+        {/* Menu List */}
+        <div className="bg-cardBg rounded-2xl border-borderDark overflow-hidden">
+          {menuItems.map((item, idx) => (
+            <div key={idx} className="flex items-center justify-between p-4 border-b border-borderDark last:border-0 cursor-pointer hover:bg-accentGold/5">
+              <div className="flex items-center gap-3">
+                <item.icon size={20} className={item.color || 'text-textSecondary'} />
+                <span className={`text-sm font-medium ${item.color || 'text-textPrimary'}`}>{item.label}</span>
+              </div>
+              <ChevronRight size={18} className="text-textSecondary"
