@@ -6,13 +6,6 @@ import Navbar from '../components/Navbar';
 export default function ProfilePage() {
   const { user } = useApp();
 
-  const menuItems = [
-    { label: 'My Enrolled Tests', icon: Award },
-    { label: 'Security & Watermarking', icon: ShieldCheck },
-    { label: 'App Settings', icon: Settings },
-    { label: 'Logout Account', icon: LogOut, color: 'text-rose-400' },
-  ];
-
   return (
     <main className="bg-background min-h-screen text-textPrimary flex flex-col pb-24">
       <Navbar />
@@ -22,7 +15,7 @@ export default function ProfilePage() {
         {/* Profile Header */}
         <div className="bg-cardBg border border-borderDark rounded-2xl p-6 flex flex-col md:flex-row items-center gap-6 shadow-xl">
           <div className="w-20 h-20 md:w-24 md:h-24 rounded-full bg-accentGold/20 border-2 border-accentGold flex items-center justify-center text-accentGold text-2xl md:text-4xl font-bold shadow-lg">
-            {user?.name?.[0] || 'U'}
+            {user?.name ? user.name[0] : 'U'}
           </div>
           <div className="text-center md:text-left flex-1 space-y-2">
             <div className="flex items-center justify-center md:justify-start gap-2 flex-wrap">
@@ -37,7 +30,7 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        {/* Stats Cards - 2 on Mobile, 4 on Desktop */}
+        {/* Stats Cards */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
           <div className="p-3 md:p-4 bg-cardBg rounded-xl border border-borderDark text-center">
             <span className="text-lg md:text-2xl font-bold text-accentGold">12</span>
@@ -50,7 +43,7 @@ export default function ProfilePage() {
           </div>
 
           <div className="p-3 md:p-4 bg-cardBg rounded-xl border border-borderDark text-center">
-            <span className="text-lg md:text-2xl font-bold text-accentGold">{user?.enrolledTests?.length || 0}</span>
+            <span className="text-lg md:text-2xl font-bold text-accentGold">{user?.enrolledTests ? user.enrolledTests.length : 0}</span>
             <p className="text-[10px] md:text-xs text-textSecondary mt-0.5 md:mt-1">Enrolled Tests</p>
           </div>
 
@@ -61,23 +54,42 @@ export default function ProfilePage() {
         </div>
 
         {/* Menu List */}
-        <div className="bg-cardBg rounded-2xl border border-borderDark overflow-hidden">
-          {menuItems.map((item, idx) => {
-            const Icon = item.icon;
-            return (
-              <div key={idx} className="flex items-center justify-between p-4 border-b border-borderDark last:border-0 cursor-pointer hover:bg-accentGold/5 transition">
-                <div className="flex items-center gap-3">
-                  <Icon size={20} className={item.color || 'text-textSecondary'} />
-                  <span className={`text-sm font-medium ${item.color || 'text-textPrimary'}`}>{item.label}</span>
-                </div>
-                <ChevronRight size={18} className="text-textSecondary" />
-              </div>
-            );
-          })}
+        <div className="bg-cardBg rounded-2xl border border-borderDark overflow-hidden divide-y divide-borderDark">
+          <div className="flex items-center justify-between p-4 cursor-pointer hover:bg-accentGold/5 transition">
+            <div className="flex items-center gap-3">
+              <Award size={20} className="text-textSecondary" />
+              <span className="text-sm font-medium text-textPrimary">My Enrolled Tests</span>
+            </div>
+            <ChevronRight size={18} className="text-textSecondary" />
+          </div>
+
+          <div className="flex items-center justify-between p-4 cursor-pointer hover:bg-accentGold/5 transition">
+            <div className="flex items-center gap-3">
+              <ShieldCheck size={20} className="text-textSecondary" />
+              <span className="text-sm font-medium text-textPrimary">Security & Watermarking</span>
+            </div>
+            <ChevronRight size={18} className="text-textSecondary" />
+          </div>
+
+          <div className="flex items-center justify-between p-4 cursor-pointer hover:bg-accentGold/5 transition">
+            <div className="flex items-center gap-3">
+              <Settings size={20} className="text-textSecondary" />
+              <span className="text-sm font-medium text-textPrimary">App Settings</span>
+            </div>
+            <ChevronRight size={18} className="text-textSecondary" />
+          </div>
+
+          <div className="flex items-center justify-between p-4 cursor-pointer hover:bg-accentGold/5 transition">
+            <div className="flex items-center gap-3">
+              <LogOut size={20} className="text-rose-400" />
+              <span className="text-sm font-medium text-rose-400">Logout Account</span>
+            </div>
+            <ChevronRight size={18} className="text-textSecondary" />
+          </div>
         </div>
 
       </div>
     </main>
   );
             }
-            
+          
