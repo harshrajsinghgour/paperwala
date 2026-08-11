@@ -1,93 +1,145 @@
 import React, { useState } from 'react';
-import Navbar from '../components/Navbar';
-import YourProgress from '../components/YourProgress';
-import TestSeriesModule from '../components/TestSeriesModule';
-import PaperWalaInfoModule from '../components/PaperWalaInfoModule';
-import GroupChatModule from '../components/GroupChatModule';
-import Link from 'next/link';
+import { 
+  BookOpen, 
+  Briefcase, 
+  HelpCircle, 
+  Award, 
+  Crown, 
+  User, 
+  Bell, 
+  Search, 
+  FileText,
+  ChevronRight,
+  ShieldCheck
+} from 'lucide-react';
+import { useApp } from '../context/AppContext';
 
-export default function Home() {
-  const [activeTier, setActiveTier] = useState('test_series');
-  const [searchTerm, setSearchTerm] = useState('');
-  
-  const user = { username: "Royal_Student", role: "student" };
-  const progressData = { totalTestsGiven: 12, averageScore: 42.5, averageAccuracy: "84%" };
+export default function MainDashboard() {
+  const { user, currentAffairs, jobAlerts } = useApp();
+  const [activeTab, setActiveTab] = useState('home');
 
   return (
-    <div className="min-h-screen bg-royal-dark text-white pb-12">
-      <Navbar searchTerm={searchTerm} setSearchTerm={setSearchTerm} user={user} />
-
-      <main className="max-w-4xl mx-auto px-4 py-4">
-        {/* Hero Section */}
-        <section className="text-center py-6 px-4 bg-gradient-to-b from-royal-blue/60 to-royal-card border border-royal-gold/30 rounded-2xl mb-4 shadow-xl">
-          <div className="w-14 h-14 mx-auto mb-2 rounded-full bg-royal-gold flex items-center justify-center text-royal-dark text-2xl font-black shadow-lg">
-            👑
+    <div className="min-h-screen bg-background text-textPrimary pb-24 max-w-md mx-auto relative border-x border-borderDark shadow-2xl">
+      
+      {/* Header Bar */}
+      <header className="p-4 bg-cardBg/80 backdrop-blur-md sticky top-0 z-50 flex items-center justify-between border-b border-borderDark">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-full bg-accentGold flex items-center justify-center font-bold text-background text-lg shadow-md">
+            PW
           </div>
-          <h1 className="text-2xl md:text-3xl font-extrabold text-royal-gold tracking-wide mb-1">
-            PAPERWALA TEST PLATFORM
-          </h1>
-          <p className="text-sm font-bold text-gray-100">India Ka Preferred Mock Test & Prep Destination</p>
-          <p className="text-xs text-gray-300 max-w-xl mx-auto mt-1 mb-4">
-            SSC, Railways, Banking aur Sarkari Exams ki taiyari karein Royal Style me.
-          </p>
-          
-          <div className="flex justify-center gap-3">
-            <Link href="/test-series/1" className="bg-royal-gold text-royal-dark text-xs font-bold px-4 py-2 rounded-lg hover:bg-yellow-400">
-              Start Test 🚀
-            </Link>
-            <Link href="/chat" className="bg-royal-blue border border-royal-gold/40 text-white text-xs font-bold px-4 py-2 rounded-lg hover:border-royal-gold">
-              Join Chat 💬
-            </Link>
+          <div>
+            <h1 className="text-base font-bold tracking-wide text-textPrimary">PAPER WALA</h1>
+            <p className="text-xs text-textSecondary">Exam & Job Prep Portal</p>
+          </div>
+        </div>
+        <div className="flex items-center gap-3">
+          <button className="p-2 bg-background rounded-full border border-borderDark text-textSecondary hover:text-accentGold transition">
+            <Bell size={18} />
+          </button>
+          <button className="flex items-center gap-1 px-3 py-1.5 bg-accentGold/10 border border-accentGold/40 text-accentGold text-xs font-semibold rounded-full">
+            <Crown size={14} />
+            <span>PRO Pass</span>
+          </button>
+        </div>
+      </header>
+
+      {/* Main Content Area */}
+      <main className="p-4 space-y-6">
+        
+        {/* Banner Section */}
+        <div className="p-5 rounded-2xl bg-gradient-to-br from-cardBg via-borderDark to-cardBg border border-accentGold/30 relative overflow-hidden shadow-lg">
+          <div className="relative z-10 space-y-2">
+            <span className="px-2.5 py-1 bg-accentGold/20 text-accentGold text-[10px] font-bold rounded-md uppercase tracking-wider">
+              Live CBT Test Engine
+            </span>
+            <h2 className="text-xl font-extrabold text-white">SSC & Railway Mock Series 2026</h2>
+            <p className="text-xs text-textSecondary">Real Exam Pattern with Instant Analytics & Watermark Security.</p>
+            <button className="mt-2 px-4 py-2 bg-accentGold hover:bg-accentGoldDark text-background font-bold text-xs rounded-xl shadow-md transition">
+              Attempt Mock Test
+            </button>
+          </div>
+        </div>
+
+        {/* Quick Navigation Cards */}
+        <div className="grid grid-cols-4 gap-3">
+          {[
+            { label: 'CBT Tests', icon: FileText, color: 'text-amber-400' },
+            { label: 'Current Affairs', icon: BookOpen, color: 'text-blue-400' },
+            { label: 'Job Alerts', icon: Briefcase, color: 'text-emerald-400' },
+            { label: 'AI Doubt Solver', icon: HelpCircle, color: 'text-purple-400' },
+          ].map((item, idx) => (
+            <button key={idx} className="p-3 bg-cardBg rounded-xl border border-borderDark flex flex-col items-center justify-center text-center gap-1.5 hover:border-accentGold/50 transition">
+              <item.icon size={22} className={item.color} />
+              <span className="text-[11px] font-medium text-textPrimary leading-tight">{item.label}</span>
+            </button>
+          ))}
+        </div>
+
+        {/* Latest Job Alerts Section */}
+        <section className="space-y-3">
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm font-bold text-textPrimary flex items-center gap-2">
+              <Briefcase size={16} className="text-accentGold" /> Job Alerts & Vacancies
+            </h3>
+            <span className="text-xs text-accentGold font-medium cursor-pointer">View All</span>
+          </div>
+
+          <div className="space-y-2.5">
+            {jobAlerts.map((job) => (
+              <div key={job.id} className="p-3.5 bg-cardBg rounded-xl border border-borderDark flex items-center justify-between hover:border-accentGold/40 transition">
+                <div>
+                  <h4 className="text-xs font-bold text-textPrimary">{job.title}</h4>
+                  <p className="text-[11px] text-textSecondary mt-0.5">Posts: {job.totalPosts} • Last Date: {job.lastDate}</p>
+                </div>
+                <ChevronRight size={16} className="text-textSecondary" />
+              </div>
+            ))}
           </div>
         </section>
 
-        {/* Your Progress Bar */}
-        <YourProgress progressData={progressData} />
+        {/* Current Affairs & Study Vault */}
+        <section className="space-y-3">
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm font-bold text-textPrimary flex items-center gap-2">
+              <BookOpen size={16} className="text-accentGold" /> Daily Current Affairs
+            </h3>
+            <span className="text-xs text-accentGold font-medium cursor-pointer">Read Notes</span>
+          </div>
 
-        {/* 5 Main Tiers */}
-        <nav className="grid grid-cols-5 gap-2 my-5">
-          {[
-            { id: 'test_series', name: 'Test Series', icon: '📝' },
-            { id: 'paperwala_info', name: 'PaperWala Info', icon: '📢' },
-            { id: 'current_affairs', name: 'Current Affairs', icon: '📰' },
-            { id: 'group_chat', name: 'Group Chat', icon: '💬' },
-            { id: 'notes', name: 'Notes', icon: '📚' }
-          ].map(tier => (
-            <button
-              key={tier.id}
-              onClick={() => setActiveTier(tier.id)}
-              className={`py-3 px-2 rounded-xl text-xs md:text-sm font-bold text-center border transition flex flex-col md:flex-row items-center justify-center gap-1.5 ${
-                activeTier === tier.id 
-                  ? 'bg-gradient-to-b from-royal-gold to-yellow-600 text-royal-dark border-royal-lightGold shadow-lg scale-105' 
-                  : 'bg-royal-card/80 text-gray-300 border-royal-gold/20 hover:border-royal-gold'
-              }`}
-            >
-              <span>{tier.icon}</span>
-              <span>{tier.name}</span>
-            </button>
-          ))}
-        </nav>
+          <div className="space-y-2.5">
+            {currentAffairs.map((ca) => (
+              <div key={ca.id} className="p-3.5 bg-cardBg rounded-xl border border-borderDark flex items-center justify-between">
+                <div>
+                  <span className="text-[10px] bg-borderDark text-accentGold px-2 py-0.5 rounded font-medium">{ca.category}</span>
+                  <h4 className="text-xs font-semibold text-textPrimary mt-1">{ca.title}</h4>
+                </div>
+                <ShieldCheck size={16} className="text-emerald-400" />
+              </div>
+            ))}
+          </div>
+        </section>
 
-        {/* Active Content */}
-        <div className="mt-6">
-          {activeTier === 'test_series' && <TestSeriesModule userId={1} />}
-          {activeTier === 'paperwala_info' && <PaperWalaInfoModule />}
-          {activeTier === 'group_chat' && <GroupChatModule user={user} />}
-          {activeTier === 'current_affairs' && (
-            <div className="p-6 bg-royal-card border border-royal-gold/30 rounded-xl space-y-3">
-              <h3 className="text-base font-bold text-royal-gold">📰 Current Affairs (दैनिक व मासिक)</h3>
-              <p className="text-xs text-gray-300">SSC, State PSC, Banking और Railways के लिए डेली PDFs।</p>
-            </div>
-          )}
-          {activeTier === 'notes' && (
-            <div className="p-6 bg-royal-card border border-royal-gold/30 rounded-xl space-y-3">
-              <h3 className="text-base font-bold text-royal-gold">📚 Study Notes & E-Books</h3>
-              <p className="text-xs text-gray-300">विषय-वार हैंडराइटेन एवं डिजिटल नोट्स।</p>
-            </div>
-          )}
-        </div>
       </main>
+
+      {/* Sticky Bottom Navigation Bar */}
+      <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md bg-cardBg/90 backdrop-blur-lg border-t border-borderDark px-6 py-2.5 flex items-center justify-between z-50">
+        {[
+          { id: 'home', label: 'Home', icon: BookOpen },
+          { id: 'tests', label: 'Tests', icon: FileText },
+          { id: 'jobs', label: 'Jobs', icon: Briefcase },
+          { id: 'profile', label: 'Profile', icon: User },
+        ].map((tab) => (
+          <button 
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id)}
+            className={`flex flex-col items-center gap-1 ${activeTab === tab.id ? 'text-accentGold' : 'text-textSecondary'}`}
+          >
+            <tab.icon size={20} />
+            <span className="text-[10px] font-medium">{tab.label}</span>
+          </button>
+        ))}
+      </nav>
+
     </div>
   );
-    }
-    
+}
