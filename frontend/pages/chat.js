@@ -1,57 +1,95 @@
-import { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import { MessageSquare, Send, Users, Shield } from 'lucide-react';
 import Navbar from '../components/Navbar';
 
 export default function ChatPage() {
+  const [input, setInput] = useState('');
   const [messages, setMessages] = useState([
-    { id: 1, sender: 'Rohan (SSC Aspirant)', text: 'Bhai GS ke liye best mock test kaun sa hai?', isUser: false },
-    { id: 2, sender: 'You', text: 'Yeh wala Distraction-Free engine kafi badiya hai, isme time waste nahi hota.', isUser: true },
+    { id: 1, user: 'Admin', role: 'Official', text: 'Welcome to PaperWala Community! Maintain decorum.', time: '10:00 AM', isUser: false },
+    { id: 2, user: 'Rohan', role: 'Student', text: 'SSC CGL Tier-1 admit card link released for North Region.', time: '10:05 AM', isUser: false },
+    { id: 3, user: 'You', role: 'Student', text: 'Yeh wala Distraction-Free engine kafi badiya hai, isme time waste nahi hota.', time: 'Just now', isUser: true },
   ]);
-  const [inputText, setInputText] = useState('');
+
+  const messagesEndRef = useRef(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
   const handleSend = (e) => {
-    e.preventDefault();
-    if (!inputText.trim()) return;
-    setMessages([...messages, { id: Date.now(), sender: 'You', text: inputText, isUser: true }]);
-    setInputText('');
+    e?.preventDefault();
+    if (!input.trim()) return;
+    setMessages((prev) => [
+     ...prev,
+      { id: Date.now(), user: 'You', role: 'Student', text: input, time: 'Just now', isUser: true }
+    ]);
+    setInput('');
   };
 
   return (
-    <main className="bg-royal-dark min-h-screen text-white flex flex-col h-screen overflow-hidden">
+    <main className="bg-background min-h-screen text-textPrimary flex-col h-screen overflow-hidden">
       <Navbar />
 
-      <div className="flex-1 max-w-5xl w-full mx-auto p-4 flex flex-col my-2 h-[calc(100vh-80px)]">
-        <div className="bg-royal-card border border-royal-gold/30 p-4 rounded-t-2xl flex justify-between items-center shadow-md">
-          <div>
-            <h2 className="text-lg font-bold text-royal-gold">SSC CGL 2026 Discussion Group</h2>
-            <p className="text-xs text-green-400">● 142 Members Online</p>
+      {/* Chat Container */}
+      <div className="flex-1 max-w-5xl w-full mx-auto p-2 md:p-4 flex flex-col my-2 h-[calc(100vh-80px)]">
+
+        {/* Header - Merged */}
+        <div className="bg-cardBg border border-borderDark p-4 rounded-t-2xl flex justify-between items-center shadow-md sticky top-0 z-50">
+          <div className="flex items-center gap-2.5">
+            <div className="p-2 bg-accentGold/10 text-accentGold rounded-lg">
+              <Users size={18} />
+            </div>
+            <div>
+              <h2 className="text-sm md:text-lg font-bold text-textPrimary">SSC & Railway Aspirant Discussion</h2>
+              <p className="text-[10px] md:text-xs text-emerald-400 font-medium">● 1,240 Online Members</p>
+            </div>
           </div>
         </div>
 
-        <div className="flex-1 bg-royal-dark/80 border-x border-royal-gold/20 p-4 overflow-y-auto space-y-4">
+        {/* Messages Feed */}
+        <div className="flex-1 bg-background/50 border-x border-borderDark p-3 md:p-4 overflow-y-auto space-y-3">
           {messages.map((msg) => (
-            <div key={msg.id} className={`flex flex-col ${msg.isUser ? 'items-end' : 'items-start'}`}>
-              <span className="text-xs text-gray-400 mb-1 px-1">{msg.sender}</span>
-              <div className={`max-w-xs md:max-w-md p-3 rounded-2xl text-sm leading-relaxed ${
-                msg.isUser 
-                  ? 'bg-royal-blue text-white border border-royal-gold/40 rounded-br-none' 
-                  : 'bg-royal-card text-gray-100 border border-royal-gold/20 rounded-bl-none'
+            <div key={msg.id} className={`flex flex-col ${msg.isUser? 'items-end' : 'items-start'}`}>
+
+              {/* Sender Name + Role */}
+              <span className="text-[10px] md:text-xs text-textSecondary mb-1 px-1 font-bold flex items-center gap-1">
+                {msg.user}
+                {msg.role === 'Official' && <Shield size={12} className="text-emerald-400" />}
+              </span>
+
+              {/* Message Bubble */}
+              <div className={`max-w-[85%] md:max-w-md p-3 rounded-2xl text-xs md:text-sm leading-relaxed border ${
+                msg.isUser
+                 ? 'bg-accentGold text-background border-accentGold/40 rounded-br-none'
+                  : 'bg-cardBg text-textPrimary border-borderDark rounded-bl-none'
               }`}>
-                {msg.text}
+                <p>{msg.text}</p>
+                <span className={`block text-right text-[9px] md:text-[10px] mt-1 ${msg.isUser? 'text-background/70' : 'text-textSecondary'}`}>
+                  {msg.time}
+                </span>
               </div>
             </div>
           ))}
+          <div ref={messagesEndRef} />
         </div>
 
-        <form onSubmit={handleSend} className="bg-royal-card border border-royal-gold/30 p-3 rounded-b-2xl flex gap-2">
-          <input 
-            type="text" 
-            value={inputText}
-            onChange={(e) => setInputText(e.target.value)}
-            placeholder="अपना संदेश या प्रश्न लिखें..."
-            className="flex-1 bg-royal-dark border border-royal-gold/30 rounded-xl px-4 py-2 text-sm text-white focus:outline-none focus:border-royal-gold"
+        {/* Chat Input - Merged */}
+        <form onSubmit={handleSend} className="bg-cardBg border-borderDark p-3 rounded-b-2xl flex gap-2 sticky bottom-0">
+          <input
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+            placeholder="Share study update or ask query... / अपना संदेश या प्रश्न लिखें..."
+            className="flex-1 bg-background border-borderDark rounded-xl px-3.5 md:px-4 py-2 text-xs md:text-sm text-textPrimary focus:outline-none focus:border-accentGold"
           />
-          <button type="submit" className="bg-royal-gold text-royal-dark px-6 py-2 rounded-xl font-bold text-sm hover:bg-yellow-400">
-            भेजें (Send)
+          <button type="submit" className="p-2 md:px-6 bg-accentGold text-background rounded-xl font-bold hover:bg-yellow-400 transition">
+            <Send size={16} className="md:hidden" />
+            <span className="hidden md:inline">भेजें (Send)</span>
           </button>
         </form>
       </div>
